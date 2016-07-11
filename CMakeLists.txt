@@ -67,7 +67,7 @@ add_subdirectory(benchmark)
 
 # Build / test ################################################################
 
-add_executable(bench "bench.cc")
-target_link_libraries(bench benchmark ${CMAKE_THREAD_LIBS_INIT})
-add_dependencies(bench benchmark)
-add_test(bench bench)
+add_executable(bench_tearing "bench_tearing.cc")
+target_link_libraries(bench_tearing benchmark ${CMAKE_THREAD_LIBS_INIT})
+add_dependencies(bench_tearing benchmark)
+add_test(bench_tearing bench_tearing)

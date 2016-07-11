@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <random>
+#include <thread>
 
 #include "benchmark/benchmark_api.h"
 
@@ -36,8 +37,12 @@ struct Tearing {
     Node *alias = reinterpret_cast<Node *>(n);
     Node old;
     // Tearable load.
+#if __x86_64__
     asm("movq %[ptr], %[l]" : [l] "=r"(old.l) : [ptr] "o"(alias->l));
     asm("movq %[ptr], %[r]" : [r] "=r"(old.r) : [ptr] "o"(alias->r));
+#else
+# error Implement this for other ISAs.
+#endif
     while (!n->compare_exchange_weak(old, act(old), std::memory_order_release,
                                      std::memory_order_relaxed))
       ;
@@ -72,19 +77,19 @@ static void B(benchmark::State &state) {
   }
 }
 
-constexpr int max_threads = 256;
-constexpr int max_atomics = 1 << 9;
+static const auto hw_concurrency =
+    std::max(std::thread::hardware_concurrency(), 1u);
+static const int max_threads = hw_concurrency * 4;
+static const int max_atomics = 1 << 9;
 BENCHMARK_TEMPLATE(B, Relaxed<Noop>)
     ->ThreadRange(1, max_threads)
     ->Range(1, max_atomics)
     ->UseRealTime()
-    ->MinTime(1.0)
-    ->Repetitions(10);
+    ->MinTime(1.0);
 BENCHMARK_TEMPLATE(B, Tearing<Noop>)
     ->ThreadRange(1, max_threads)
     ->Range(1, max_atomics)
     ->UseRealTime()
-    ->MinTime(1.0)
-    ->Repetitions(10);
+    ->MinTime(1.0);
 
 BENCHMARK_MAIN();
