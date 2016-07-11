@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 language: cpp
 
 matrix:
@@ -21,6 +21,9 @@ matrix:
 before_install:
   - export CC="${CC}-${COMPILER_VERSION}"
   - export CXX="${CXX}-${COMPILER_VERSION}"
+
+before_script:
+  - source .travis-setup.sh
 
 script:
   - git submodule init
