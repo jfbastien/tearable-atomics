@@ -58,7 +58,6 @@ else()
   add_compile_flag("-O2")
 endif()
 
-find_package(Threads REQUIRED)
 add_compile_flag("-std=c++11")
 
 # Submodule ###################################################################
