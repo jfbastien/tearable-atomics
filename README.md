@@ -1,5 +1,7 @@
 # Tearable atomics
 
+[![Build Status](https://travis-ci.org/jfbastien/tearable-atomics.svg?branch=master)](https://travis-ci.org/jfbastien/tearable-atomics)
+
 Is it useful for C++ to support "tearable" atomic memory ordering, where the
 access participates in atomic ordering as strongly as `memory_order_relaxed`
 accesses, but where the memory is allowed to tear (i.e. isn't single-copy

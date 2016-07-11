@@ -1,0 +1,36 @@
+sudo: required
+language: cpp
+
+matrix:
+  include:
+
+    - env: COMPILER_VERSION=3.6
+      compiler: clang
+      addons: &clang36
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
+          packages: ['cmake', 'clang-3.6']
+
+    - env: COMPILER_VERSION=5
+      compiler: gcc
+      addons: &gcc5
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['cmake', 'g++-5']
+
+before_install:
+  - export CC="${CC}-${COMPILER_VERSION}"
+  - export CXX="${CXX}-${COMPILER_VERSION}"
+
+before_script:
+  - source .travis-setup.sh
+
+script:
+  - git submodule init
+  - git submodule update
+  - cmake . -DCMAKE_C_FLAGS="$COMPILER_FLAGS" -DCMAKE_CXX_FLAGS="$COMPILER_FLAGS"
+  - make -j2
+  - make bench_tearing
+
+notifications:
+  email: false

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 2.8.7)
 project(tearable CXX)
 
 # Boilerplate #################################################################
@@ -58,7 +58,6 @@ else()
   add_compile_flag("-O2")
 endif()
 
-find_package(Threads REQUIRED)
 add_compile_flag("-std=c++11")
 
 # Submodule ###################################################################
